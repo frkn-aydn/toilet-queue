@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Toilet Queue</title>
+    <!-- Bu uygulama tulatte yaşanan kaouse engelleme amaçlı yazılmıştır... -->
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after{
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+        .wrapper{
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-area{
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+        }
+
+        .sira{
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        form{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin-bottom: 100px;
+            margin-bottom: 20px;
+        }
+        #name{
+            width: 100%;
+            height: 40px;
+            line-height:40px;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            outline: none;
+            border-radius: 10px 0px 0 10px;
+        }
+        button{
+            width: 120px;
+            height: 40px;
+            line-height: 37px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover{
+            background-color: #3498db;
+            color: #fff;
+        }
+        #leave{
+            border-radius: 0px 10px 10px 0px;            
+        }
+        #leave:hover{
+            background-color:#e74c3c;
+            color: #fff;
+        }
+        ul{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        ul li{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        ul li span{
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-area">
+            <form id="join-form">
+                <input type="text" placeholder="Lütfen isminizi giriniz..." id="name">
+                <button type="submit">Sıraya gir</button>
+                <button type="button" id="leave">Sıradan çık</button>
+            </form>
+        </div>
+        <div class="sira">
+            <ul id="liste"></ul>
+        </div>
+    </div>
+    <script>
+        var socket = io.connect("192.168.1.54:3000");
+        socket.on("update-people", function(people){
+            ListToiletLine(people)
+        });
+
+        document.getElementById("join-form").addEventListener("submit", function(e){
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            socket.emit("join-toilet-line", name);
+        })
+
+        document.getElementById("leave").addEventListener("click", function(e){
+            e.preventDefault();
+            socket.emit("remove-from-toilet-line");
+        })
+
+        function ListToiletLine(people){
+            const liste = document.getElementById("liste");
+            liste.innerHTML = "";
+
+            for(let i in people){
+                const li = document.createElement("li");
+                li.innerHTML = `
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="#000000" d="M9,22H17V19.5C19.41,17.87 21,15.12 21,12V4A2,2 0 0,0 19,2H15C13.89,2 13,2.9 13,4V12H3C3,15.09 5,18 9,19.5V22M5.29,14H18.71C18.14,15.91 16.77,17.5 15,18.33V20H11V18.33C9,18 5.86,15.91 5.29,14M15,4H19V12H15V4M16,5V8H18V5H16Z" />
+                </svg>
+                <span>${people[i]}</span>
+                `;
+
+                liste.appendChild(li);
+            }
+        }
+
+        setTimeout(function(){
+            socket.emit("get-list");
+        }, 300)
+    </script>
+</body>
+</html>
