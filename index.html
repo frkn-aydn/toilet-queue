@@ -119,7 +119,7 @@
         </div>
     </div>
     <script>
-        var socket = io.connect("192.168.1.54:3000");
+        var socket = io.connect("toilet.vircon.online");
         socket.on("update-people", function(people){
             ListToiletLine(people)
         });
