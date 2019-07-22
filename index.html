@@ -49,20 +49,27 @@
             height: 40px;
             line-height:40px;
             padding: 6px 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #333;
             background-color: #fff;
             outline: none;
             border-radius: 10px 0px 0 10px;
+            color: #333;
         }
         button{
             width: 120px;
             height: 40px;
-            line-height: 37px;
-            border: 1px solid #ddd;
+            line-height: 36px;
+            border: 1px solid #333;
             background-color: #fff;
             outline: none;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 14px;
         }
         button:hover{
             background-color: #3498db;
@@ -98,10 +105,13 @@
 <body>
     <div class="wrapper">
         <div class="form-area">
+            <h2>Toilet Queue</h2>
             <form id="join-form">
-                <input type="text" placeholder="Lütfen isminizi giriniz..." id="name">
-                <button type="submit">Sıraya gir</button>
-                <button type="button" id="leave">Sıradan çık</button>
+                <input type="text" placeholder="Please enter your name to join line..." id="name">
+                <button type="submit">Join</button>
+                <button type="button" id="leave">
+                    Left
+                </button>
             </form>
         </div>
         <div class="sira">
